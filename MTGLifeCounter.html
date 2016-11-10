@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body>
+
+<div ng-app="myApp" ng-controller="formCtrl" ng-init="reset()">
+  <div ng-show="showInitForm">
+    Players: <select ng-model="playerNum" ng-options="x for x in playNums" ng-change="changePlayers()"></select><br>
+    Type: <input type="radio" ng-model="gamType" value="S">Standard<input type="radio" ng-model="gamType" value="C">Commander<br>
+    <input type="checkbox" ng-model="isPlanechase">Planechase?<br>
+    <br><br>
+    
+    <div>Player 1: <input type="text" ng-model="p1Name" ng-change="testInput()"></div><br>
+    <div>Player 2: <input type="text" ng-model="p2Name" ng-change="testInput()"></div><br>
+    <div ng-show="showP3"">Player 3: <input type="text" ng-model="p3Name" ng-change="testInput()"></div><br>
+    <div ng-show="showP4"">Player 4: <input type="text" ng-model="p4Name" ng-change="testInput()"></div><br>
+    <br><br>
+
+    <h1>Debug: {{ test }}</h1>
+
+    <img ng-show="isPlanechase" src="http://humpheh.com/magic/p/res/W500/Academy%20at%20Tolaria%20West-W500.jpg">
+
+    <br><br>
+    <button ng-disabled="invalidInput" ng-click="startGame()">Start</button>
+  </div>
+
+  <div ng-show="showLifeCounters">
+    <table border=1>
+      <tr>
+        <th>{{p1Name}}</th>
+        <th>{{p2Name}}</th>
+        <th ng-show="showP3">{{p3Name}}</th>
+        <th ng-show="showP4">{{p4Name}}</th>
+      </tr>
+    </table>
+    <br><br>
+    <button ng-click="startGame()">Back</button>
+  </div>
+
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('formCtrl', function($scope) {
+    $scope.playNums = [2,3,4];
+    $scope.gameType = ['Standard','Commander'];
+    $scope.test = 0;
+    $scope.invalidInput = false;
+
+    //init variables
+    $scope.reset = function() {
+      $scope.playerNum = 2;
+      $scope.gamType = 'S';
+      $scope.showInitForm = true;
+      $scope.showLifeCounters = false;
+      $scope.p1Name = 'Player1';
+      $scope.p2Name = 'Player2';
+    }
+
+/*
+    $scope.testInput = function() {
+      if ($scope.playerNum == 2 
+          && ($scope.p1Name.$error.required || $scope.p2Name.$error.required)) {
+        $scope.invalidInput = true;
+      } else {
+        $scope.invalidInput = false;
+      }
+    }*/
+
+    
+    $scope.changePlayers = function() {
+      if ($scope.playerNum == 2) {
+        $scope.showP3 = false;
+        $scope.showP4 = false;
+      } else if ($scope.playerNum == 3) {
+        $scope.showP3 = true;
+        $scope.p3Name = 'Player3';
+        $scope.showP4 = false;
+      } else {
+        $scope.showP3 = true;
+        $scope.p3Name = 'Player3';
+        $scope.showP4 = true;
+        $scope.p4Name = 'Player4';
+      }
+
+      $scope.test = $scope.playerNum;
+    }
+    
+
+    $scope.startGame = function() {
+      $scope.showInitForm = !$scope.showInitForm;
+      $scope.showLifeCounters = !$scope.showLifeCounters;
+    }
+});
+</script>
+
+</body>
+</html>
